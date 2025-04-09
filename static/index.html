@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SwiftCompose Chat</title>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #60a5fa;
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --text: #1e293b;
+        --text-light: #64748b;
+      }
+
+      body {
+        font-family: "Outfit", sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h2 {
+        font-weight: 600;
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: -0.02em;
+      }
+
+      #chat {
+        height: 400px;
+        overflow-y: auto;
+        padding: 1.5rem;
+        background: var(--surface);
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+      }
+
+      #chat::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      #chat::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      #chat::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 3px;
+      }
+
+      .message {
+        margin-bottom: 1rem;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: slideIn 0.3s ease forwards;
+      }
+
+      @keyframes slideIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .message b {
+        color: var(--primary);
+        font-weight: 500;
+      }
+
+      #inputContainer {
+        position: relative;
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      #inputRow {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      #msg {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        background: transparent;
+        transition: all 0.2s ease;
+      }
+
+      #msg:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      #ghost {
+        display: block;
+        padding: 0.5rem 1rem;
+        color: var(--text-light);
+        font-family: "Fira Code", monospace;
+        font-size: 0.875rem;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.2s ease;
+      }
+
+      #ghost.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      #sendBtn {
+        padding: 0.75rem 1.5rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 500;
+        color: white;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      #sendBtn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      }
+
+      #sendBtn:active {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 12px;
+        }
+
+        #inputRow {
+          flex-direction: column;
+        }
+
+        #sendBtn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>SwiftCompose Chat</h2>
+
+      <div id="chat"></div>
+
+      <div id="inputContainer">
+        <div id="inputRow">
+          <input
+            type="text"
+            id="msg"
+            autocomplete="off"
+            placeholder="Type a message..."
+          />
+          <button id="sendBtn" onclick="send()">
+            <span>Send</span>
+          </button>
+        </div>
+        <div id="ghost"></div>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
