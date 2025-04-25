@@ -1,30 +1,26 @@
 # autocomplete.py
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from llama_cpp import Llama
+from huggingface_hub import hf_hub_download
 
-MODEL_NAME = "gpt2"
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
-model.eval()
+# Download model from Hugging Face
+# model_path = hf_hub_download(
+#     repo_id="fazmain/swiftcompose-llama-1b",
+#     filename="unsloth.Q4_K_M.gguf"  # Replace with your actual filename
+# )
 
-MAX_CONTEXT_TOKENS = 500
-PREDICTION_TOKENS = 10
+model_path = hf_hub_download(
+    repo_id="DevQuasar/unsloth.Llama-3.2-1B-GGUF",
+    filename="unsloth.Llama-3.2-1B.Q4_K_M.gguf"  # Replace with your actual filename
+)
+
+llm = Llama(model_path=model_path, n_ctx=512)
 
 def get_suggestion(prompt: str):
-    input_ids = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=MAX_CONTEXT_TOKENS).input_ids.to(device)
-
-    with torch.no_grad():
-        output = model.generate(
-            input_ids,
-            max_new_tokens=PREDICTION_TOKENS,
-            do_sample=True,
-            temperature=0.4,
-            top_p=0.95,
-            pad_token_id=tokenizer.eos_token_id
-        )
-
-    full_text = tokenizer.decode(output[0], skip_special_tokens=True)
-    generated = " " + full_text[len(prompt):].strip().split("\n")[0]
-    return generated
+    output = llm(
+        prompt,
+        max_tokens=10,
+        temperature=0.7,
+        top_p=0.95,
+        stop=["\n", "You:"]
+    )
+    return " " + output["choices"][0]["text"].strip()
